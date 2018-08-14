@@ -70,19 +70,26 @@ $(function() {
       });
         const feed = document.querySelector('.feed');
         it('creates entries', function(){
-          expect(feed.children.length > 0).toBe(true); //checks that there is at least one entry inside the feed div. 
+          expect(feed.children.length > 0).toBe(true); //checks that there is at least one entry inside the feed div.
         });
     });
 
-    /* TODO: Write a new test suite named "New Feed Selection" */
     describe('New Feed Selection', function(){
-      it('loads new feed', function(){
+      const feed = document.querySelector('.feed')
+      const feedOne = []; //this empty array will store the inner text of the first feed so it can actually be compared to the second, since otherwise it would disappear on load.
 
+      beforeEach(function(done){
+        loadFeed(0);
+        Array.from(feed.children).forEach(function(entry){
+          feedOne.push(entry.innerText); //this pushes each item in the feed into an array, so we can compare the contents of the arrays later.
+        });
+        loadFeed(1, done); //after the first feed is loaded and stored in an array, we can load up the second array and exit the function.
       });
-      /* TODO: Write a test that ensures when a new feed is loaded
-       * by the loadFeed function that the content actually changes.
-       * Remember, loadFeed() is asynchronous.
-       */
-    });
 
+      it('changes feed', function(){
+        Array.from(feed.children).forEach(function(entry, index){ //this creates a second array out of the most recently loaded feed to compare to feedOne.
+          expect(entry.innerText === feedOne[index]).toBe(false); //If the first and second arrays have different values for the same position, then the feed content is changing when a new feed is selected and works as expected. 
+        });
+      })
+    });
 }());
