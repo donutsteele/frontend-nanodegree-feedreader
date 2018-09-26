@@ -68,9 +68,13 @@ $(function() {
       beforeEach(function(done){ //done must be called in beforeEach before the test suite will run
         loadFeed(0, done); //in the loadFeed function in app.js, it calls for an entry id and a callback. Since there are no functions to call back to in this test, the code should finish executing.
       });
-        const feed = document.querySelector('.feed');
+
         it('creates entries', function(){
-          expect(feed.children.length > 0).toBe(true); //checks that there is at least one entry inside the feed div.
+          const feed = document.querySelector('.feed');
+          let entries = feed.querySelectorAll('.entry');
+
+            console.log(entries);
+            expect(entries.length > 0).toBe(true); //checks that there is at least one entry inside the feed div.
         });
     });
 
@@ -79,16 +83,17 @@ $(function() {
       const feedOne = []; //this empty array will store the inner text of the first feed so it can actually be compared to the second, since otherwise it would disappear on load.
 
       beforeEach(function(done){
-        loadFeed(0);
-        Array.from(feed.children).forEach(function(entry){
-          feedOne.push(entry.innerText); //this pushes each item in the feed into an array, so we can compare the contents of the arrays later.
+        loadFeed(0, function(){
+          Array.from(feed.children).forEach(function(entry){
+            feedOne.push(entry.innerText)
+          });
+          loadFeed(1, done);
         });
-        loadFeed(1, done); //after the first feed is loaded and stored in an array, we can load up the second array and exit the function.
       });
 
       it('changes feed', function(){
         Array.from(feed.children).forEach(function(entry, index){ //this creates a second array out of the most recently loaded feed to compare to feedOne.
-          expect(entry.innerText === feedOne[index]).toBe(false); //If the first and second arrays have different values for the same position, then the feed content is changing when a new feed is selected and works as expected. 
+          expect(entry.innerText === feedOne[index]).toBe(false); //If the first and second arrays have different values for the same position, then the feed content is changing when a new feed is selected and works as expected.
         });
       })
     });
